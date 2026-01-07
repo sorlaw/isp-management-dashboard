@@ -104,8 +104,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
         })
 
+        // Safety timeout: If auth takes too long, force stop loading
+        const timeoutId = setTimeout(() => {
+            if (mounted) {
+                console.warn('[AuthProvider] Auth check timed out (10s), forcing stop loading.')
+                setIsLoading(false)
+            }
+        }, 10000)
+
         return () => {
             mounted = false
+            clearTimeout(timeoutId)
             subscription.unsubscribe()
         }
     }, [setProfile, setIsLoading, supabase, router])
