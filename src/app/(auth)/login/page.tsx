@@ -94,6 +94,10 @@ export default function LoginPage() {
                 const targetRole = profile?.role || 'customer'
                 const targetPath = targetRole === 'admin' ? '/admin/dashboard' : '/dashboard'
 
+                // Small delay to ensure Supabase cookie is set and propagated
+                await new Promise(resolve => setTimeout(resolve, 1000))
+                router.refresh()
+
                 // Hard reload to sync everything if needed, or just push
                 window.location.href = targetPath // Using window.location to force full state refresh safely
             }
